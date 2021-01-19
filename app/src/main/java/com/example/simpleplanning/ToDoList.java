@@ -1,8 +1,12 @@
 package com.example.simpleplanning;
 
+import android.content.ContentValues;
 import android.content.Intent;
+import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
 import android.icu.text.SimpleDateFormat;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
@@ -12,29 +16,29 @@ import android.widget.TextView;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 
-import java.text.BreakIterator;
-
 
 public class ToDoList extends AppCompatActivity implements View.OnClickListener {
+
+    Button btnAdd, btnRead, btnClear;
+    EditText etNote;
+    DBHelper dbHelper;
+    private String selDate;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
-        Button btnAdd, btnRead;
-        EditText etNote;
-
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_to_do_list);
-        ActionBar actionBar =getSupportActionBar();
+        ActionBar actionBar = getSupportActionBar();
         actionBar.setHomeButtonEnabled(true);
         actionBar.setDisplayHomeAsUpEnabled(true);
         Intent intent = getIntent();
         Bundle bundle = intent.getExtras();
         Long sDate = bundle.getLong("sDate");
         SimpleDateFormat dateFormat = new SimpleDateFormat("dd.MM.yyyy");
-        String sDate1 = dateFormat.format(sDate);
+        selDate = dateFormat.format(sDate);
         TextView textView1 = findViewById(R.id.textDate);
-        textView1.setText(sDate1);
+        textView1.setText(selDate);
 
         btnAdd = (Button) findViewById(R.id.btnAdd);
         btnAdd.setOnClickListener(this);
@@ -42,7 +46,13 @@ public class ToDoList extends AppCompatActivity implements View.OnClickListener 
         btnRead = (Button) findViewById(R.id.btnRead);
         btnRead.setOnClickListener(this);
 
+        btnClear = (Button) findViewById(R.id.btnClear);
+        btnRead.setOnClickListener(this);
+
         etNote = (EditText) findViewById(R.id.etNote);
+        etNote.setOnClickListener(this);
+
+        dbHelper = new DBHelper(this);
 
     }
 
@@ -61,16 +71,42 @@ public class ToDoList extends AppCompatActivity implements View.OnClickListener 
     public void onClick(View v) {
         String note = etNote.getText().toString();
 
+        SQLiteDatabase database = dbHelper.getWritableDatabase();
+
+        ContentValues contentValues = new ContentValues();
+
         switch (v.getId()) {
             case R.id.btnAdd:
+                contentValues.put(DBHelper.KEY_DATE, selDate);
+                contentValues.put(DBHelper.KEY_NOTE, note);
 
+                database.insert(DBHelper.TABLE_SP, null, contentValues);
                 break;
 
             case R.id.btnRead:
+                Cursor cursor = database.query(DBHelper.TABLE_SP, null, null, null, null, null, null);
+
+                if (cursor.moveToFirst()) {
+                    int idIndex = cursor.getColumnIndex(DBHelper.KEY_ID);
+                    int dateIndex = cursor.getColumnIndex(DBHelper.KEY_DATE);
+                    int noteIndex = cursor.getColumnIndex(DBHelper.KEY_NOTE);
+                    do {
+                        Log.d("mLog", "ID = " + cursor.getInt(idIndex) + ", date - "
+                                + cursor.getString(dateIndex) + ", note - " + cursor.getString(noteIndex));
+                    } while (cursor.moveToNext());
+                } else
+                    Log.d("mLog", "0 rows");
+
+                cursor.close();
+                break;
+
+            case R.id.btnClear:
+                database.delete(DBHelper.TABLE_SP, null, null);
 
                 break;
 
         }
+        dbHelper.close();
 
     }
 
