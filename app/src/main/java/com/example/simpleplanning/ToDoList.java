@@ -11,6 +11,8 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ListView;
+import android.widget.SimpleCursorAdapter;
 import android.widget.TextView;
 
 import androidx.appcompat.app.ActionBar;
@@ -22,7 +24,10 @@ public class ToDoList extends AppCompatActivity implements View.OnClickListener 
     Button btnAdd, btnRead, btnClear;
     EditText etNote;
     DBHelper dbHelper;
+    SQLiteDatabase db;
     private String selDate;
+    ListView list;
+    SimpleCursorAdapter scAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -39,6 +44,15 @@ public class ToDoList extends AppCompatActivity implements View.OnClickListener 
         selDate = dateFormat.format(sDate);
         TextView textView1 = findViewById(R.id.textDate);
         textView1.setText(selDate);
+
+
+        String [] from = new String[] {DBHelper.KEY_NOTE};
+        int[] to = new int[]  {R.id.itemNote};
+        scAdapter = new SimpleCursorAdapter(this, R.layout.item, null, from, to, 0);
+        list = findViewById(R.id.doList);
+        list.setAdapter(scAdapter);
+
+
 
         btnAdd = (Button) findViewById(R.id.btnAdd);
         btnAdd.setOnClickListener(this);
@@ -75,12 +89,13 @@ public class ToDoList extends AppCompatActivity implements View.OnClickListener 
 
         ContentValues contentValues = new ContentValues();
 
+
         switch (v.getId()) {
             case R.id.btnAdd:
                 contentValues.put(DBHelper.KEY_DATE, selDate);
                 contentValues.put(DBHelper.KEY_NOTE, note);
-
                 database.insert(DBHelper.TABLE_SP, null, contentValues);
+
                 break;
 
             case R.id.btnRead:
@@ -90,9 +105,12 @@ public class ToDoList extends AppCompatActivity implements View.OnClickListener 
                     int idIndex = cursor.getColumnIndex(DBHelper.KEY_ID);
                     int dateIndex = cursor.getColumnIndex(DBHelper.KEY_DATE);
                     int noteIndex = cursor.getColumnIndex(DBHelper.KEY_NOTE);
+
                     do {
                         Log.d("mLog", "ID = " + cursor.getInt(idIndex) + ", date - "
                                 + cursor.getString(dateIndex) + ", note - " + cursor.getString(noteIndex));
+                        scAdapter.changeCursor(cursor);
+
                     } while (cursor.moveToNext());
                 } else
                     Log.d("mLog", "0 rows");
@@ -101,8 +119,8 @@ public class ToDoList extends AppCompatActivity implements View.OnClickListener 
                 break;
 
             case R.id.btnClear:
-                database.delete(DBHelper.TABLE_SP, null, null);
 
+                database.delete(DBHelper.TABLE_SP, null, null);
                 break;
 
         }
@@ -110,19 +128,5 @@ public class ToDoList extends AppCompatActivity implements View.OnClickListener 
 
     }
 
-
-    //SQLiteDatabase db = getBaseContext().openOrCreateDatabase("app.db", MODE_PRIVATE, null);
-        //db.execSQL("CREATE TABLE IF NOT EXISTS notes (date DATE, note TEXT)");
- //      Cursor query = db.rawQuery("SELECT * FROM notes /*where date = selectedDate*/;", null);
- //       TextView textView = (TextView) findViewById(R.id.textView);
-   //     if(query.moveToFirst()){
-     //       do{
-       //         String note = query.getString(0);
-         //       textView.append(note);
-//            }
-//            while(query.moveToNext());
-//        }
- //       query.close();
-//        db.close();
 
 }

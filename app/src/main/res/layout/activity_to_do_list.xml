@@ -43,5 +43,10 @@
         android:layout_height="wrap_content"
         android:text="Очистить"/>
 
+    <ListView
+        android:id="@+id/doList"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
+
 
 </LinearLayout>
