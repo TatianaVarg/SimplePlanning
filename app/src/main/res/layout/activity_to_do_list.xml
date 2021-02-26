@@ -8,6 +8,7 @@
     android:orientation="vertical"
     tools:context=".ToDoList">
 
+
     <TextView
         android:id="@+id/textDate"
         android:layout_width="match_parent"
@@ -19,17 +20,6 @@
         tools:layout_editor_absoluteX="0dp"
         tools:layout_editor_absoluteY="0dp" />
 
-    <EditText
-        android:id="@+id/etNote"
-        android:hint="Note"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
-
-    <Button
-        android:id="@+id/btnAdd"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Добавить"/>
 
     <Button
         android:id="@+id/btnRead"
@@ -38,15 +28,21 @@
         android:text="Читать"/>
 
     <Button
-        android:id="@+id/btnClear"
-        android:layout_width="wrap_content"
+        android:id="@+id/btnAddAdd"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Очистить"/>
+        android:text="Добавить запись" />
+
+    <Button
+        android:id="@+id/btnClear"
+        android:layout_width="match_parent"
+        android:layout_height="60dp"
+        android:text="Button" />
 
     <ListView
-        android:id="@+id/doList"
+        android:id="@+id/lvData"
         android:layout_width="match_parent"
-        android:layout_height="match_parent" />
+        android:layout_height="528dp" />
 
 
 </LinearLayout>
