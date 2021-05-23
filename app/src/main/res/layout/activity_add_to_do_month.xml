@@ -5,8 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    tools:context=".AddToDo">
-
+    tools:context=".AddToDoMonth">
 
     <EditText
         android:id="@+id/etNote"
@@ -24,5 +23,6 @@
         android:paddingBottom="10dp"
         android:background="#9314ff"
         android:text="Добавить" />
+
 
 </LinearLayout>

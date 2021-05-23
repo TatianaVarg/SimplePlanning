@@ -3,7 +3,6 @@ package com.example.simpleplanning;
 import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
-import android.icu.text.SimpleDateFormat;
 import android.os.Bundle;
 import android.view.MenuItem;
 import android.view.View;
@@ -16,29 +15,23 @@ import android.widget.TextView;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 
-import static com.example.simpleplanning.DBHelper.TABLE_DO;
+import static com.example.simpleplanning.DBHelper.TABLE_MONTH;
 
+public class ToDoMonth extends AppCompatActivity implements View.OnClickListener{
 
-
-public class ToDoList extends AppCompatActivity implements View.OnClickListener {
-
-    Button btnAdd, btnRead, btnToBuy;
     DBHelper dbHelper;
-
-    String selDate;
-    Long sDate;
     SimpleCursorAdapter scAdapter;
     ListView lvData;
+    Button btnAdd;
+    Long sDate;
+    String selDate;
     int del;
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_to_do_list);
+        setContentView(R.layout.activity_to_do_month);
 
-        //кнопка назад определение
         ActionBar actionBar = getSupportActionBar();
         actionBar.setDisplayHomeAsUpEnabled(true);
 
@@ -46,38 +39,31 @@ public class ToDoList extends AppCompatActivity implements View.OnClickListener 
         Intent intent = getIntent();
         Bundle bundle = intent.getExtras();
         sDate = bundle.getLong("sDate");
-        SimpleDateFormat dateFormat = new SimpleDateFormat("dd.MM.yyyy");
-        selDate = dateFormat.format(sDate);
-        TextView textView1 = findViewById(R.id.textDate);
-        textView1.setText("Список дел на " + selDate);
+        //SimpleDateFormat dateFormat = new SimpleDateFormat("dd.MM.yyyy");
+        //selDate = dateFormat.format(sDate);
+        TextView textView1 = findViewById(R.id.textD);
+        textView1.setText("Список дел на месяц " + sDate);
+        //textView1.setText("Список дел на " + selDate);
 
-        del = 1;
+        del = 3;
 
-        btnAdd = (Button) findViewById(R.id.btnAdd);
+        btnAdd = (Button) findViewById(R.id.btnAddM);
         btnAdd.setOnClickListener(this);
 
-        btnToBuy = (Button) findViewById(R.id.btnToBuy);
-        btnToBuy.setOnClickListener(this);
-
-        /*btnRead = (Button) findViewById(R.id.btnRead);
-        btnRead.setOnClickListener(this);*/
-
-        //заполнение ListView
         dbHelper = new DBHelper(this);
         SQLiteDatabase database = dbHelper.getWritableDatabase();
 
-        Cursor cursor = database.query(TABLE_DO, null, "date = " + sDate, null, null, null, null);
+        Cursor cursor = database.query(TABLE_MONTH, null, "date = " + sDate, null, null, null, null);
 
         String[] from = new String[] {DBHelper.KEY_NOTE};
         int[] to = new int[] { R.id.itemNote};
 
         scAdapter = new SimpleCursorAdapter(this, R.layout.item, cursor, from, to);
 
-        lvData = (ListView) findViewById(R.id.lvData);
+        lvData = (ListView) findViewById(R.id.lvDataM);
         lvData.setAdapter(scAdapter);
 
-
-        //Обработка долгого нажатия
+        //долгое нажатие
         lvData.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
             @Override
             public boolean onItemLongClick(AdapterView<?> arg0, View arg1,
@@ -88,7 +74,6 @@ public class ToDoList extends AppCompatActivity implements View.OnClickListener 
             }
 
         });
-
     }
 
     public void showDialog(View v, long id, SQLiteDatabase database) {
@@ -118,46 +103,15 @@ public class ToDoList extends AppCompatActivity implements View.OnClickListener 
 
     @Override
     public void onClick(View v) {
-
-        /*SQLiteDatabase database = dbHelper.getWritableDatabase();
-
-        ContentValues contentValues = new ContentValues();*/
-
         //переход на добавление элемента
         switch (v.getId()) {
-            case R.id.btnAdd:
+            case R.id.btnAddM:
                 Bundle bundle = new Bundle();
                 bundle.putLong("sDate", sDate);
-                Intent intent = new Intent(getApplicationContext(), AddToDo.class);
+                Intent intent = new Intent(getApplicationContext(), AddToDoMonth.class);
                 intent.putExtras(bundle);
                 startActivity(intent);
                 break;
-
-            case R.id.btnToBuy:
-                Bundle bundle1 = new Bundle();
-                bundle1.putLong("sDate", sDate);
-                Intent intent1 = new Intent(getApplicationContext(), ToBuyList.class);
-                intent1.putExtras(bundle1);
-                startActivity(intent1);
-                break;
-
-            //вывод бд в лог
-            /*case R.id.btnRead:
-                Cursor cursor = database.query(TABLE_DO, null, null, null, null, null, null);
-                if (cursor.moveToFirst()) {
-                    int idIndex = cursor.getColumnIndex(DBHelper.KEY_ID);
-                    int dateIndex = cursor.getColumnIndex(DBHelper.KEY_DATE);
-                    int noteIndex = cursor.getColumnIndex(DBHelper.KEY_NOTE);
-                    do {
-                        Log.d("mLog", "ID = " + cursor.getInt(idIndex) + ", date - "
-                                + cursor.getString(dateIndex) + ", note - " + cursor.getString(noteIndex));
-
-                    } while (cursor.moveToNext());
-                } else
-                    Log.d("mLog", "0 rows");
-                cursor.close();
-                database.delete(TABLE_SP, "_id = 1", null);
-                break;*/
 
         }
 

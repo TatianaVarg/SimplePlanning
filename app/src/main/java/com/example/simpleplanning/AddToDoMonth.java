@@ -12,7 +12,7 @@ import android.widget.EditText;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 
-public class AddToDo extends AppCompatActivity implements View.OnClickListener {
+public class AddToDoMonth extends AppCompatActivity implements View.OnClickListener {
 
     Button btnAdd;
     EditText etNote;
@@ -22,7 +22,7 @@ public class AddToDo extends AppCompatActivity implements View.OnClickListener {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_add_to_do);
+        setContentView(R.layout.activity_add_to_do_month);
 
         //кнопка назад определение
         ActionBar actionBar = getSupportActionBar();
@@ -39,7 +39,6 @@ public class AddToDo extends AppCompatActivity implements View.OnClickListener {
         etNote.setOnClickListener(this);
 
         dbHelper = new DBHelper(this);
-
     }
 
     @Override
@@ -48,7 +47,7 @@ public class AddToDo extends AppCompatActivity implements View.OnClickListener {
             case android.R.id.home:
                 Bundle bundle = new Bundle();
                 bundle.putLong("sDate", sDate);
-                Intent intent = new Intent(getApplicationContext(), ToDoList.class);
+                Intent intent = new Intent(getApplicationContext(), ToDoMonth.class);
                 intent.putExtras(bundle);
                 startActivity(intent);
                 return true;
@@ -59,6 +58,7 @@ public class AddToDo extends AppCompatActivity implements View.OnClickListener {
 
     @Override
     public void onClick(View v) {
+
         String note = etNote.getText().toString();
 
         SQLiteDatabase database = dbHelper.getWritableDatabase();
@@ -70,12 +70,12 @@ public class AddToDo extends AppCompatActivity implements View.OnClickListener {
                 if (etNote.getText().length() != 0) {
                     contentValues.put(DBHelper.KEY_DATE, sDate);
                     contentValues.put(DBHelper.KEY_NOTE, note);
-                    database.insert(DBHelper.TABLE_DO, null, contentValues);
+                    database.insert(DBHelper.TABLE_MONTH, null, contentValues);
                     // dbHelper.close();
                     dbHelper.close();
                     Bundle bundle = new Bundle();
                     bundle.putLong("sDate", sDate);
-                    Intent intent = new Intent(AddToDo.this, ToDoList.class);
+                    Intent intent = new Intent(this, ToDoMonth.class);
                     intent.putExtras(bundle);
                     startActivity(intent);
                 }
@@ -83,8 +83,5 @@ public class AddToDo extends AppCompatActivity implements View.OnClickListener {
                 break;
 
         }
-
-
-
     }
 }

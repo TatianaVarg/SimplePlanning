@@ -16,47 +16,41 @@ import android.widget.TextView;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 
-import static com.example.simpleplanning.DBHelper.TABLE_DO;
+import static com.example.simpleplanning.DBHelper.TABLE_BUY;
 
+public class ToBuyList extends AppCompatActivity implements View.OnClickListener {
 
-
-public class ToDoList extends AppCompatActivity implements View.OnClickListener {
-
-    Button btnAdd, btnRead, btnToBuy;
+    Button btnAdd, btnToBuy, btnRead;
     DBHelper dbHelper;
 
-    String selDate;
+    private String selDate;
     Long sDate;
     SimpleCursorAdapter scAdapter;
     ListView lvData;
     int del;
 
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_to_do_list);
+        setContentView(R.layout.activity_to_buy_list);
 
-        //кнопка назад определение
+        //кнопка назад
         ActionBar actionBar = getSupportActionBar();
         actionBar.setDisplayHomeAsUpEnabled(true);
 
-        //получение даты
         Intent intent = getIntent();
         Bundle bundle = intent.getExtras();
         sDate = bundle.getLong("sDate");
         SimpleDateFormat dateFormat = new SimpleDateFormat("dd.MM.yyyy");
         selDate = dateFormat.format(sDate);
         TextView textView1 = findViewById(R.id.textDate);
-        textView1.setText("Список дел на " + selDate);
-
-        del = 1;
+        textView1.setText("Список покупок на " + selDate);
+        del = 2;
 
         btnAdd = (Button) findViewById(R.id.btnAdd);
         btnAdd.setOnClickListener(this);
 
-        btnToBuy = (Button) findViewById(R.id.btnToBuy);
+        btnToBuy = (Button) findViewById(R.id.btnToDo);
         btnToBuy.setOnClickListener(this);
 
         /*btnRead = (Button) findViewById(R.id.btnRead);
@@ -66,7 +60,7 @@ public class ToDoList extends AppCompatActivity implements View.OnClickListener 
         dbHelper = new DBHelper(this);
         SQLiteDatabase database = dbHelper.getWritableDatabase();
 
-        Cursor cursor = database.query(TABLE_DO, null, "date = " + sDate, null, null, null, null);
+        Cursor cursor = database.query(TABLE_BUY, null, "date = " + sDate, null, null, null, null);
 
         String[] from = new String[] {DBHelper.KEY_NOTE};
         int[] to = new int[] { R.id.itemNote};
@@ -75,7 +69,6 @@ public class ToDoList extends AppCompatActivity implements View.OnClickListener 
 
         lvData = (ListView) findViewById(R.id.lvData);
         lvData.setAdapter(scAdapter);
-
 
         //Обработка долгого нажатия
         lvData.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
@@ -88,7 +81,6 @@ public class ToDoList extends AppCompatActivity implements View.OnClickListener 
             }
 
         });
-
     }
 
     public void showDialog(View v, long id, SQLiteDatabase database) {
@@ -102,6 +94,8 @@ public class ToDoList extends AppCompatActivity implements View.OnClickListener 
         dialog.show(getSupportFragmentManager(), "custom");
 
     }
+
+
 
     //кнопка назад реализация
     @Override
@@ -123,27 +117,26 @@ public class ToDoList extends AppCompatActivity implements View.OnClickListener 
 
         ContentValues contentValues = new ContentValues();*/
 
-        //переход на добавление элемента
         switch (v.getId()) {
             case R.id.btnAdd:
                 Bundle bundle = new Bundle();
                 bundle.putLong("sDate", sDate);
-                Intent intent = new Intent(getApplicationContext(), AddToDo.class);
+                Intent intent = new Intent(getApplicationContext(), AddToBuy.class);
                 intent.putExtras(bundle);
                 startActivity(intent);
                 break;
 
-            case R.id.btnToBuy:
+            case R.id.btnToDo:
                 Bundle bundle1 = new Bundle();
                 bundle1.putLong("sDate", sDate);
-                Intent intent1 = new Intent(getApplicationContext(), ToBuyList.class);
+                Intent intent1 = new Intent(getApplicationContext(), ToDoList.class);
                 intent1.putExtras(bundle1);
                 startActivity(intent1);
                 break;
 
             //вывод бд в лог
             /*case R.id.btnRead:
-                Cursor cursor = database.query(TABLE_DO, null, null, null, null, null, null);
+                Cursor cursor = database.query(TABLE_BUY, null, null, null, null, null, null);
                 if (cursor.moveToFirst()) {
                     int idIndex = cursor.getColumnIndex(DBHelper.KEY_ID);
                     int dateIndex = cursor.getColumnIndex(DBHelper.KEY_DATE);
@@ -156,12 +149,8 @@ public class ToDoList extends AppCompatActivity implements View.OnClickListener 
                 } else
                     Log.d("mLog", "0 rows");
                 cursor.close();
-                database.delete(TABLE_SP, "_id = 1", null);
+                database.delete(TABLE_BUY, "_id = 1", null);
                 break;*/
-
         }
-
-        dbHelper.close();
     }
-
 }

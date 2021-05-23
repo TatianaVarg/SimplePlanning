@@ -13,7 +13,9 @@ import androidx.annotation.NonNull;
 import androidx.fragment.app.DialogFragment;
 
 import static com.example.simpleplanning.DBHelper.KEY_ID;
-import static com.example.simpleplanning.DBHelper.TABLE_SP;
+import static com.example.simpleplanning.DBHelper.TABLE_BUY;
+import static com.example.simpleplanning.DBHelper.TABLE_DO;
+import static com.example.simpleplanning.DBHelper.TABLE_MONTH;
 
 public class CustomDialogFragment extends DialogFragment{
     long key_id;
@@ -21,11 +23,14 @@ public class CustomDialogFragment extends DialogFragment{
     SimpleCursorAdapter scAdapter;
     ListView lvData;
     Long sDate;
+    int del;
+    String table;
+
     @NonNull
     public Dialog onCreateDialog(Bundle savedInstanceState) {
 
         String title = "Удалить запись?";
-        //String message = "Выбери пищу";
+        //String message = "Сообщение";
         String button1String = "Да";
         String button2String = "Нет";
 
@@ -35,16 +40,24 @@ public class CustomDialogFragment extends DialogFragment{
         builder.setPositiveButton(button1String, new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int id) {
                 SQLiteDatabase database = dbHelper.getWritableDatabase();
-                database.delete(TABLE_SP, KEY_ID + " = " + key_id, null);
+                if (del == 1) {
+                    table = TABLE_DO;
+                }
+                else if (del == 2){
+                    table = TABLE_BUY;
+                }
+                else {
+                    table = TABLE_MONTH;
+                }
 
-                Cursor cursor = database.query(TABLE_SP, null, "date = " + sDate, null, null, null, null);
+                database.delete(table, KEY_ID + " = " + key_id, null);
+                Cursor cursor = database.query(table, null, "date = " + sDate, null, null, null, null);
 
                 String[] from = new String[] {DBHelper.KEY_NOTE};
                 int[] to = new int[] { R.id.itemNote};
 
                 scAdapter.changeCursorAndColumns(cursor, from, to);
                 lvData.setAdapter(scAdapter);
-
             }
         });
         builder.setNegativeButton(button2String, new DialogInterface.OnClickListener() {
