@@ -13,7 +13,6 @@ import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 
 public class AddToDo extends AppCompatActivity implements View.OnClickListener {
-
     Button btnAdd;
     EditText etNote;
     DBHelper dbHelper;
@@ -24,7 +23,6 @@ public class AddToDo extends AppCompatActivity implements View.OnClickListener {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_to_do);
 
-        //кнопка назад определение
         ActionBar actionBar = getSupportActionBar();
         actionBar.setDisplayHomeAsUpEnabled(true);
 
@@ -39,7 +37,6 @@ public class AddToDo extends AppCompatActivity implements View.OnClickListener {
         etNote.setOnClickListener(this);
 
         dbHelper = new DBHelper(this);
-
     }
 
     @Override
@@ -60,9 +57,7 @@ public class AddToDo extends AppCompatActivity implements View.OnClickListener {
     @Override
     public void onClick(View v) {
         String note = etNote.getText().toString();
-
         SQLiteDatabase database = dbHelper.getWritableDatabase();
-
         ContentValues contentValues = new ContentValues();
 
         switch (v.getId()) {
@@ -71,7 +66,6 @@ public class AddToDo extends AppCompatActivity implements View.OnClickListener {
                     contentValues.put(DBHelper.KEY_DATE, sDate);
                     contentValues.put(DBHelper.KEY_NOTE, note);
                     database.insert(DBHelper.TABLE_DO, null, contentValues);
-                    // dbHelper.close();
                     dbHelper.close();
                     Bundle bundle = new Bundle();
                     bundle.putLong("sDate", sDate);
@@ -79,12 +73,7 @@ public class AddToDo extends AppCompatActivity implements View.OnClickListener {
                     intent.putExtras(bundle);
                     startActivity(intent);
                 }
-
                 break;
-
         }
-
-
-
     }
 }

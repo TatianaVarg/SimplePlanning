@@ -14,7 +14,8 @@
         android:layout_height="wrap_content"
         app:abbreviationsBarColor="#e2b9ff"
         app:pagesColor="#ffebff"
-        app:todayLabelColor="#007dff" />
+        app:todayLabelColor="#007dff"
+        app:headerColor="#8b00ff" />
 
     <LinearLayout
         android:layout_width="match_parent"

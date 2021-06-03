@@ -40,6 +40,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:background="#9314ff"
+            android:paddingLeft="35dp"
+            android:paddingRight="35dp"
             android:text="К списку дел" />
 
         <Button

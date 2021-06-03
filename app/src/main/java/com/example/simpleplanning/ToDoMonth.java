@@ -23,9 +23,8 @@ public class ToDoMonth extends AppCompatActivity implements View.OnClickListener
     SimpleCursorAdapter scAdapter;
     ListView lvData;
     Button btnAdd;
-    Long sDate;
-    String selDate;
-    int del;
+    Long sMonth;
+    String table, sNote;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -35,17 +34,13 @@ public class ToDoMonth extends AppCompatActivity implements View.OnClickListener
         ActionBar actionBar = getSupportActionBar();
         actionBar.setDisplayHomeAsUpEnabled(true);
 
-        //получение даты
         Intent intent = getIntent();
         Bundle bundle = intent.getExtras();
-        sDate = bundle.getLong("sDate");
-        //SimpleDateFormat dateFormat = new SimpleDateFormat("dd.MM.yyyy");
-        //selDate = dateFormat.format(sDate);
+        sMonth = bundle.getLong("sMonth");
         TextView textView1 = findViewById(R.id.textD);
-        textView1.setText("Список дел на месяц " + sDate);
-        //textView1.setText("Список дел на " + selDate);
+        textView1.setText("Список дел на месяц");
 
-        del = 3;
+        table = TABLE_MONTH;
 
         btnAdd = (Button) findViewById(R.id.btnAddM);
         btnAdd.setOnClickListener(this);
@@ -53,7 +48,7 @@ public class ToDoMonth extends AppCompatActivity implements View.OnClickListener
         dbHelper = new DBHelper(this);
         SQLiteDatabase database = dbHelper.getWritableDatabase();
 
-        Cursor cursor = database.query(TABLE_MONTH, null, "date = " + sDate, null, null, null, null);
+        Cursor cursor = database.query(TABLE_MONTH, null, "date = " + sMonth, null, null, null, null);
 
         String[] from = new String[] {DBHelper.KEY_NOTE};
         int[] to = new int[] { R.id.itemNote};
@@ -68,24 +63,24 @@ public class ToDoMonth extends AppCompatActivity implements View.OnClickListener
             @Override
             public boolean onItemLongClick(AdapterView<?> arg0, View arg1,
                                            int pos, long id) {
+                cursor.moveToPosition(pos);
+                sNote = cursor.getString(cursor.getColumnIndex("note"));
                 showDialog(arg1, id, database);
-
                 return true;
             }
-
         });
     }
 
     public void showDialog(View v, long id, SQLiteDatabase database) {
         CustomDialogFragment dialog = new CustomDialogFragment();
         dialog.dbHelper = dbHelper;
-        dialog.del = del;
+        dialog.sNote = sNote;
+        dialog.table = table;
         dialog.key_id = id;
-        dialog.sDate = sDate;
+        dialog.sDate = sMonth;
         dialog.scAdapter = scAdapter;
         dialog.lvData = lvData;
         dialog.show(getSupportFragmentManager(), "custom");
-
     }
 
     //кнопка назад реализация
@@ -107,15 +102,12 @@ public class ToDoMonth extends AppCompatActivity implements View.OnClickListener
         switch (v.getId()) {
             case R.id.btnAddM:
                 Bundle bundle = new Bundle();
-                bundle.putLong("sDate", sDate);
+                bundle.putLong("sMonth", sMonth);
                 Intent intent = new Intent(getApplicationContext(), AddToDoMonth.class);
                 intent.putExtras(bundle);
                 startActivity(intent);
                 break;
-
         }
-
         dbHelper.close();
     }
-
 }

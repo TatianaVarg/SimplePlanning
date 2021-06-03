@@ -20,14 +20,14 @@ import static com.example.simpleplanning.DBHelper.TABLE_BUY;
 
 public class ToBuyList extends AppCompatActivity implements View.OnClickListener {
 
-    Button btnAdd, btnToBuy, btnRead;
+    Button btnAdd, btnToBuy;
     DBHelper dbHelper;
 
     private String selDate;
     Long sDate;
     SimpleCursorAdapter scAdapter;
     ListView lvData;
-    int del;
+    String table, sNote;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -45,16 +45,14 @@ public class ToBuyList extends AppCompatActivity implements View.OnClickListener
         selDate = dateFormat.format(sDate);
         TextView textView1 = findViewById(R.id.textDate);
         textView1.setText("Список покупок на " + selDate);
-        del = 2;
+
+        table = TABLE_BUY;
 
         btnAdd = (Button) findViewById(R.id.btnAdd);
         btnAdd.setOnClickListener(this);
 
         btnToBuy = (Button) findViewById(R.id.btnToDo);
         btnToBuy.setOnClickListener(this);
-
-        /*btnRead = (Button) findViewById(R.id.btnRead);
-        btnRead.setOnClickListener(this);*/
 
         //заполнение ListView
         dbHelper = new DBHelper(this);
@@ -75,27 +73,26 @@ public class ToBuyList extends AppCompatActivity implements View.OnClickListener
             @Override
             public boolean onItemLongClick(AdapterView<?> arg0, View arg1,
                                            int pos, long id) {
+                cursor.moveToPosition(pos);
+                sNote = cursor.getString(cursor.getColumnIndex("note"));
                 showDialog(arg1, id, database);
 
                 return true;
             }
-
         });
     }
 
     public void showDialog(View v, long id, SQLiteDatabase database) {
         CustomDialogFragment dialog = new CustomDialogFragment();
         dialog.dbHelper = dbHelper;
-        dialog.del = del;
+        dialog.sNote = sNote;
+        dialog.table = table;
         dialog.key_id = id;
         dialog.sDate = sDate;
         dialog.scAdapter = scAdapter;
         dialog.lvData = lvData;
         dialog.show(getSupportFragmentManager(), "custom");
-
     }
-
-
 
     //кнопка назад реализация
     @Override
@@ -113,10 +110,6 @@ public class ToBuyList extends AppCompatActivity implements View.OnClickListener
     @Override
     public void onClick(View v) {
 
-        /*SQLiteDatabase database = dbHelper.getWritableDatabase();
-
-        ContentValues contentValues = new ContentValues();*/
-
         switch (v.getId()) {
             case R.id.btnAdd:
                 Bundle bundle = new Bundle();
@@ -133,24 +126,6 @@ public class ToBuyList extends AppCompatActivity implements View.OnClickListener
                 intent1.putExtras(bundle1);
                 startActivity(intent1);
                 break;
-
-            //вывод бд в лог
-            /*case R.id.btnRead:
-                Cursor cursor = database.query(TABLE_BUY, null, null, null, null, null, null);
-                if (cursor.moveToFirst()) {
-                    int idIndex = cursor.getColumnIndex(DBHelper.KEY_ID);
-                    int dateIndex = cursor.getColumnIndex(DBHelper.KEY_DATE);
-                    int noteIndex = cursor.getColumnIndex(DBHelper.KEY_NOTE);
-                    do {
-                        Log.d("mLog", "ID = " + cursor.getInt(idIndex) + ", date - "
-                                + cursor.getString(dateIndex) + ", note - " + cursor.getString(noteIndex));
-
-                    } while (cursor.moveToNext());
-                } else
-                    Log.d("mLog", "0 rows");
-                cursor.close();
-                database.delete(TABLE_BUY, "_id = 1", null);
-                break;*/
         }
     }
 }

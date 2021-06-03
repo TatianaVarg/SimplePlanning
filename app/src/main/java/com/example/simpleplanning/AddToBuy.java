@@ -13,7 +13,6 @@ import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 
 public class AddToBuy extends AppCompatActivity implements View.OnClickListener {
-
     Button btnAdd;
     EditText etNote;
     DBHelper dbHelper;
@@ -24,7 +23,6 @@ public class AddToBuy extends AppCompatActivity implements View.OnClickListener 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_to_buy);
 
-        //кнопка назад определение
         ActionBar actionBar = getSupportActionBar();
         actionBar.setDisplayHomeAsUpEnabled(true);
 
@@ -75,10 +73,7 @@ public class AddToBuy extends AppCompatActivity implements View.OnClickListener 
                     intent.putExtras(bundle);
                     startActivity(intent);
                 }
-
                 break;
-
         }
-
     }
 }

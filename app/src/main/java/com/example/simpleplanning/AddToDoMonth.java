@@ -13,24 +13,22 @@ import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 
 public class AddToDoMonth extends AppCompatActivity implements View.OnClickListener {
-
     Button btnAdd;
     EditText etNote;
     DBHelper dbHelper;
-    Long sDate;
+    Long sMonth;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_to_do_month);
 
-        //кнопка назад определение
         ActionBar actionBar = getSupportActionBar();
         actionBar.setDisplayHomeAsUpEnabled(true);
 
         Intent intent = getIntent();
         Bundle bundle = intent.getExtras();
-        sDate = bundle.getLong("sDate");
+        sMonth = bundle.getLong("sMonth");
 
         btnAdd = (Button) findViewById(R.id.btnAdd);
         btnAdd.setOnClickListener(this);
@@ -46,7 +44,7 @@ public class AddToDoMonth extends AppCompatActivity implements View.OnClickListe
         switch (item.getItemId()) {
             case android.R.id.home:
                 Bundle bundle = new Bundle();
-                bundle.putLong("sDate", sDate);
+                bundle.putLong("sMonth", sMonth);
                 Intent intent = new Intent(getApplicationContext(), ToDoMonth.class);
                 intent.putExtras(bundle);
                 startActivity(intent);
@@ -58,30 +56,24 @@ public class AddToDoMonth extends AppCompatActivity implements View.OnClickListe
 
     @Override
     public void onClick(View v) {
-
         String note = etNote.getText().toString();
-
         SQLiteDatabase database = dbHelper.getWritableDatabase();
-
         ContentValues contentValues = new ContentValues();
 
         switch (v.getId()) {
             case R.id.btnAdd:
                 if (etNote.getText().length() != 0) {
-                    contentValues.put(DBHelper.KEY_DATE, sDate);
+                    contentValues.put(DBHelper.KEY_DATE, sMonth);
                     contentValues.put(DBHelper.KEY_NOTE, note);
                     database.insert(DBHelper.TABLE_MONTH, null, contentValues);
-                    // dbHelper.close();
                     dbHelper.close();
                     Bundle bundle = new Bundle();
-                    bundle.putLong("sDate", sDate);
+                    bundle.putLong("sMonth", sMonth);
                     Intent intent = new Intent(this, ToDoMonth.class);
                     intent.putExtras(bundle);
                     startActivity(intent);
                 }
-
                 break;
-
         }
     }
 }
