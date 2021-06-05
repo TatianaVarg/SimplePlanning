@@ -12,9 +12,9 @@
         android:id="@+id/etNote"
         android:layout_width="match_parent"
         android:layout_height="128dp"
+        android:inputType="textMultiLine"
         android:gravity="top|left"
-        android:hint="Введите текст"
-        android:inputType="textCapSentences" />
+        android:hint="Введите текст" />
 
     <Button
         android:id="@+id/btnAdd"

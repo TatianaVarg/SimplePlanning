@@ -1,7 +1,6 @@
 package com.example.simpleplanning;
 
 import android.content.Intent;
-import android.icu.util.Calendar;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
@@ -9,6 +8,8 @@ import android.widget.Button;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.applandeo.materialcalendarview.CalendarView;
+
+import java.util.Calendar;
 
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
@@ -24,7 +25,18 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         Button btnAdd = (Button) findViewById(R.id.btnToDoM);
         btnAdd.setOnClickListener((View.OnClickListener) this);
 
+        //Button btnNext = (Button) findViewById(R.id.forwardButton);
+        //if (btnNext == onKeyDown())
+
         sMonth = Calendar.DATE;
+
+
+//        CalendarView.setOnPreviousPageChangeListener ( new  OnCalendarPageChangeListener() {
+//            @Override
+//            public  void  onChange () {
+//                sMonth++;
+//            }
+//        });
 
         calendarView.setOnDayClickListener(eventDay -> {
             Bundle bundle = new Bundle();
@@ -34,6 +46,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             startActivity(intent);
         });
     }
+
+
 
     @Override
     public void onClick(View v) {
